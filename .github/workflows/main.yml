@@ -1,0 +1,27 @@
+name: Linux ssh (12gb ram / 60gb ssd / 2core / VT-x support)
+
+on: 
+  workflow_dispatch:
+    inputs:
+      ngrok:
+        description: 'ngrok auth token'
+        required: true
+ 
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: chuẩn bị phần mềm
+        run: |
+          sudo apt update -y
+          sudo apt install curl wget qemu-kvm -y
+          wget https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-linux-amd64.tgz
+          tar -xf ngrok-v3-stable-linux-amd64.tgz
+          chmod +x ngrok
+          ./ngrok config add-authtoken "${{ github.event.inputs.ngrok }}"
+          nohup ./ngrok tcp --region ap 22 &>/dev/null &
+      - name: đang setup linũ
+        run: |
+          sudo chmod 666 /dev/kvm
+          sudo wget -O /mnt/file.qcow2 "https://app.vagrantup.com/linuxusersfake/boxes/ubuntuserver22/versions/0.0/providers/qemu/amd64/vagrant.box"
+          sudo kvm -M q35,usb=on -device usb-tablet -cpu host -smp 2,cores=2 -m 12G -device virtio-balloon-pci -vga qxl -net nic,netdev=n0 -netdev user,id=n0,hostfwd=tcp::23-:22 -boot c -device virtio-serial-pci -device virtio-rng-pci -enable-kvm -drive file=/mnt/file.qcow2 -drive file=driver.iso,media=cdrom -vnc :0 -bios /usr/share/ovmf/OVMF.fd
