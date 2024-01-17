@@ -19,7 +19,7 @@ jobs:
           tar -xf ngrok-v3-stable-linux-amd64.tgz
           chmod +x ngrok
           ./ngrok config add-authtoken "${{ github.event.inputs.ngrok }}"
-          nohup ./ngrok tcp --region ap 22 &>/dev/null &
+          nohup ./ngrok tcp --region ap 23 &>/dev/null &
       - name: đang setup linũ
         run: |
           sudo chmod 666 /dev/kvm
