@@ -1,0 +1,34 @@
+name: Linux ssh (12gb ram / 60gb ssd / 2core / VT-x support)
+
+on: 
+  workflow_dispatch:
+    inputs:
+      ngrok:
+        description: 'ngrok auth token'
+        required: true
+ 
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: chuẩn bị phần mềm
+        run: |
+          sudo apt update -y
+          sudo apt install curl wget qemu-kvm cpulimit -y
+          curl -fsSL https://tailscale.com/install.sh | sh
+          sudo nohup tailscaled --state=tailscaled.state &>/dev/null &
+          sudo tailscale up
+      - name: đang setup linũ
+        run: |
+          sudo chmod 666 /dev/kvm
+          echo "dang tai linux"
+          sudo wget -O /mnt/file.qcow2 "https://app.vagrantup.com/linuxusersfake/boxes/ubuntuserver22/versions/0.0/providers/qemu/amd64/vagrant.box" &>/dev/null &
+          while ps axg | grep -vw grep | grep -w wget > /dev/null; do sleep 1; done
+          echo "thanh cong"
+          tailscale ip -4
+          echo "dang nhap voi port 23, ko dc dang nhap port 22 vi port 22 la ssh work va kha nang bi bay cao"
+          echo "neu muon cai desktop env thi mo voi port 5901"
+          echo "neu muon view console dang nhap voi port 5900"
+          sudo cpulimit -l 75 -- sudo kvm -M q35,usb=on -device usb-tablet -cpu host -smp 2,cores=2 -m 12G -device virtio-balloon-pci -vga qxl -net nic,netdev=n0 -netdev user,id=n0,hostfwd=tcp::23-:22,tcp::5901-:5901 -boot c -device virtio-serial-pci -device virtio-rng-pci -enable-kvm -drive file=/mnt/file.qcow2,if=virtio,cache=unsafe -vnc :0 -bios /usr/share/ovmf/OVMF.fd
+          while ps axg | grep -vw grep | grep -w qemu-system-x86_64 > /dev/null; do sleep 1; done
+          while ps axg | grep -vw grep | grep -w kvm > /dev/null; do sleep 1; done
