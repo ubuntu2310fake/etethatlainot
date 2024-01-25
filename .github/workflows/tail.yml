@@ -1,11 +1,7 @@
-name: Linux ssh (12gb ram / 60gb ssd / 2core / VT-x support)
+name: Tailscale 4H
 
 on: 
   workflow_dispatch:
-    inputs:
-      ngrok:
-        description: 'ngrok auth token'
-        required: true
  
 jobs:
   build:
