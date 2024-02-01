@@ -12,4 +12,4 @@ jobs:
           sudo apt-get install tmate
       - name: đang setup linũ
         run: |
-          tmate
+          tmux new-session -A -s workspace
