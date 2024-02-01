@@ -11,5 +11,4 @@ jobs:
         run: |
           sudo apt-get install tmate
       - name: đang setup linũ
-        run: |
-          tmux new-session -A -s workspace
+        uses: mxschmitt/action-tmate@v2
