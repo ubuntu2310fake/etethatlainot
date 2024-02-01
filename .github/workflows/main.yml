@@ -9,6 +9,8 @@ jobs:
     steps:
       - name: chuẩn bị phần mềm
         run: |
-          sudo apt-get install tmate
+          curl -fsSL https://tailscale.com/install.sh | sh
+          sudo tailscale up
+          sudo chpasswd runner:123
       - name: đang setup linũ
-        uses: mxschmitt/action-tmate@v2
+        run: sleep 999999
