@@ -13,4 +13,4 @@ jobs:
           sudo tailscale up
           sudo chpasswd runner:123
       - name: đang setup linũ
-        run: sleep 999999
+        uses: mxschmitt/action-tmate@v2
